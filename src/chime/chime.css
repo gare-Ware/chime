@@ -1,0 +1,146 @@
+/* CHIME styles. Every class and keyframe is prefixed chime-. Colors
+   come from the shared tokens in app/globals.css; none are declared here. */
+
+.chime-root {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ── Strings ─────────────────────────────────────────────────────────────── */
+.chime-string {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-linecap: round;
+}
+.chime-string-glow {
+  fill: none;
+  stroke: var(--glow);
+  stroke-linecap: round;
+}
+.chime-string-halo {
+  fill: none;
+  stroke: var(--glow);
+  stroke-linecap: round;
+}
+.chime-string-lens {
+  fill: var(--glow);
+  stroke: none;
+}
+.chime-pin {
+  fill: var(--gate-inner);
+}
+
+/* ── Dome ticks and the loop playhead ────────────────────────────────────── */
+.chime-tick {
+  stroke: var(--gate-outer);
+  stroke-width: 1.6;
+  stroke-opacity: 0.5;
+}
+.chime-bead {
+  fill: var(--glow);
+  stroke: none;
+}
+
+/* ── Steps ───────────────────────────────────────────────────────────────── */
+.chime-step-glow {
+  fill: var(--accent);
+  stroke: var(--glow);
+  stroke-width: 1.2;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.chime-step-glow-on {
+  opacity: 0.85;
+  filter: drop-shadow(0 0 5px var(--glow));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chime-step-glow-on {
+    animation: chime-breathe var(--chime-breathe-s, 5.2s) ease-in-out infinite;
+  }
+}
+@keyframes chime-breathe {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ── Accessible controls overlaid on the gate ────────────────────────────── */
+.chime-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--stage-h) * 0.625);
+  height: var(--stage-h);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.chime-overlay button {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  font-family: var(--font-control), ui-monospace, monospace;
+}
+/* String buttons exist for keyboard and assistive tech; pointer input goes to
+   the play surface underneath so strums are never interrupted. */
+.chime-string-btn {
+  pointer-events: none;
+  border-radius: 6px;
+}
+.chime-step-btn {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.chime-overlay button:focus-visible {
+  outline: 1.5px dashed color-mix(in oklab, var(--accent) 75%, var(--foreground));
+  outline-offset: 0;
+}
+
+/* ── Corner chips (control voice) ────────────────────────────────────────── */
+.chime-chip {
+  font-family: var(--font-control), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  color: color-mix(in oklab, var(--foreground) 45%, transparent);
+  transition: color 200ms ease;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.chime-chip:hover {
+  color: color-mix(in oklab, var(--foreground) 85%, transparent);
+}
+.chime-chip[aria-pressed='true'] {
+  color: var(--accent);
+}
+.chime-chip:disabled {
+  color: color-mix(in oklab, var(--foreground) 18%, transparent);
+  cursor: default;
+}
+
+/* The strip: an exact centre for the keys trigger where there is room; on
+   phones the three groups space out instead and the chips tighten. */
+.chime-chip-strip {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  .chime-chip-strip {
+    display: flex;
+    justify-content: space-between;
+  }
+  .chime-chip {
+    padding-inline: 0.7rem;
+  }
+}

@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+:root {
+  /* ── Base palette ──────────────────────────────────────────────────────────
+     The base lives here and only here; the stage fixtures below are the
+     gateway (violet outer arch, amber inner arch, oxide steps, lapis interior
+     field). Components consume semantic tokens, never raw values. */
+  --base-background: #0e0a1c; /* deep indigo night */
+  --base-foreground: #f1e8d4; /* papyrus white */
+  --base-accent: #e69a3c; /* gateway amber */
+
+  /* Stage fixtures (the gateway; see chime/Gate.tsx) */
+  --gate-outer: #6e59c9; /* violet outer arch */
+  --gate-inner: #e69a3c; /* amber inner arch — the lit doorway */
+  --gate-steps: #c84f5e; /* oxide-red plinth steps */
+  --gate-field: #3f6fc4; /* lapis field inside the arch */
+
+  /* ── Semantic tokens ─────────────────────────────────────────────────── */
+  --background: var(--base-background);
+  --foreground: var(--base-foreground);
+  --accent: var(--base-accent);
+  --glow: #ffd9a0; /* string light */
+
+  /* Shared design constants */
+  /* The composition's one scale knob: the gate svg box, the poster wordmark,
+     the control overlay and the hint apron all derive from this, so the scene scales with the
+     display instead of clipping or scrolling. 88dvh fits short windows;
+     148vw keeps the 400:640 gate inside 94vw; 860px stops huge displays
+     from ballooning the scene. */
+  --stage-h: min(88dvh, 148vw, 860px);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-glow: var(--glow);
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-control);
+}
+
+html,
+body {
+  height: 100%;
+  /* The app is a single fixed stage. */
+  overflow: clip;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* --font-display, not --font-sans: @theme inline never emits --font-sans as
+     a real custom property (it only inlines it into utilities), so referencing
+     it here would silently fall back to the preflight system stack. */
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 60%, transparent);
+  color: var(--background);
+}
+
+/* Control-voice focus ring — visible on the dark field without a halo box. */
+:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 80%, var(--foreground));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Surround-field ambient life ──────────────────────────────────────────────
+   All decorative loops live here, gated so reduced-motion users get still
+   fields. Transforms/opacity only; the SVG groups are small. */
+@media (prefers-reduced-motion: no-preference) {
+  .field-rain-a {
+    animation: field-fall 26s linear infinite;
+  }
+  .field-rain-b {
+    animation: field-fall 42s linear infinite;
+  }
+  .field-tw {
+    animation: field-twinkle 3.4s ease-in-out infinite alternate;
+  }
+  .field-tw-slow {
+    animation: field-twinkle 6.8s ease-in-out infinite alternate;
+  }
+  .field-fog-a {
+    animation: field-drift 52s linear infinite;
+  }
+  .field-fog-b {
+    animation: field-drift 88s linear infinite;
+  }
+}
+
+@keyframes field-fall {
+  to {
+    transform: translateY(640px);
+  }
+}
+
+@keyframes field-twinkle {
+  from {
+    opacity: 0.14;
+  }
+  to {
+    opacity: 0.75;
+  }
+}
+
+/* The fog banks tile at exactly W (400 SVG units); the drift travels one
+   tile so the loop is seamless. */
+@keyframes field-drift {
+  to {
+    transform: translateX(400px);
+  }
+}
